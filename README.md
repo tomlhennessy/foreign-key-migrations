@@ -5,15 +5,18 @@ utilize foreign keys and associated data.
 
 ## Getting started
 
-Download starter. `cd` into __server__ folder, and install dependencies using
-`npm install`.
+Download starter. 
 
-Create a __.env__ file modelled after __.env.example__, specifying the location 
-of the database to be created.
+Execute the __setup-commands.sh__ script from the root directory of this
+practice. 
 
-Use `sequelize-cli` to run the existing migrations and seeder files.  Use 
-`sqlite3` to check that the `Bands`, `Instruments`, and `Musicians` tables 
-exist in your database.
+```shell
+sh setup-commands.sh
+```
+
+View the contents of the script to see the commands that are executed. View the
+results in the terminal to confirm that setup was successful in creating the
+`Bands`, `Instruments`, and `Musicians` tables in your database.
 
 The Express endpoints for this practice will not yield results from a database 
 but are included in order to demonstrate how to initialize Sequelize with an 
