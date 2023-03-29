@@ -1,6 +1,5 @@
-require('dotenv').config();
-const { removeTestDB, runMigrations, runSeeders } = require('./testUtils');
-const { Band, Instrument, Musician } = require('./db/models');
+const { removeTestDB, runMigrations, runSeeders } = require('./test-utils');
+const { Band, Musician } = require('../db/models');
 
 
 (async () => {
@@ -27,14 +26,14 @@ const { Band, Instrument, Musician } = require('./db/models');
     console.log("\nALL MUSICIANS (Expect only Adam's data):")
     let musicians = await Musician.findAll();
     musicians.forEach(musician => console.log(musician.toJSON()))
-    
-    console.log("\nDELETING BAND 'The Falling Box'")
+
+    console.log("\nDELETING BAND 'The Falling Box' with all associated musicians")
     await fallingBox.destroy();
-    
+
     // Test that deleting the band deleted Adam
     console.log("ALL MUSICIANS (No expected output):")
     musicians = await Musician.findAll();
-    musicians.forEach(musician => console.log(musician.toJSON()))
+    musicians.forEach(musician => console.log(musician.toJSON()));
   } catch (err) {
       console.error(err)
   }

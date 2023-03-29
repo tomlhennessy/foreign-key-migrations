@@ -1,0 +1,24 @@
+{
+    "name": "sequelize-foreign-key-migrations-short-practice",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+      "install": "npm install --prefix server",
+      "test": "NODE_ENV=test mocha --timeout 10000",
+      "test-with-json": "NODE_ENV=test mocha --timeout 10000 --reporter json",
+      "reset-files": "node test/utils/reset-files.js",
+      "demo-1": "npm run demo-1 --prefix server",
+      "demo-2": "npm run demo-2 --prefix server"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "chai": "^4.3.6",
+      "chai-as-promised": "^7.1.1",
+      "chai-http": "^4.3.0",
+      "mocha": "^9.2.2",
+      "sqlite3": "^5.0.2"
+    }
+  }

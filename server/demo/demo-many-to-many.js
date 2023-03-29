@@ -1,6 +1,5 @@
-require('dotenv').config();
-const { removeTestDB, runMigrations, runSeeders } = require('./testUtils');
-const { Band, Instrument, Musician } = require('./db/models');
+const { removeTestDB, runMigrations, runSeeders } = require('./test-utils');
+const { Band, Instrument, Musician } = require('../db/models');
 
 
 (async () => {
@@ -66,8 +65,8 @@ const { Band, Instrument, Musician } = require('./db/models');
     console.log("(Expect Georgette and Marine):");
     let saxophone = await Instrument.findOne({where: {type: 'saxophone'}})
     let saxophonists = await saxophone.getMusicians({
-      attributes: ['id', 'firstName', 'lastName'], 
-      order: [['firstName']], 
+      attributes: ['id', 'firstName', 'lastName'],
+      order: [['firstName']],
       includeIgnoreAttributes: false
     });
     saxophonists.forEach(musician => console.log(musician.toJSON()));
@@ -77,8 +76,8 @@ const { Band, Instrument, Musician } = require('./db/models');
     console.log("\nALL INSTRUMENTS PLAYED BY GEORGETTE");
     console.log("(Expect drums, saxophone, and trumpet):");
     let georgetteInst = await georgette.getInstruments({
-      attributes: ['id', 'type'], 
-      order: [['type']], 
+      attributes: ['id', 'type'],
+      order: [['type']],
       includeIgnoreAttributes: false
     });
     georgetteInst.forEach(instrument => console.log(instrument.toJSON()));
@@ -87,15 +86,16 @@ const { Band, Instrument, Musician } = require('./db/models');
     // Tests Instruments belongToMany Musicians, which belongTo a Band
     console.log("\nINSTRUMENTS PLAYED BY MEMBERS OF THE FALLING BOX");
     console.log("(Expect bass, cello, guitar, and piano):");
-    let fallingInstruments = await Instrument.findAll({ 
-      where: {'$Musicians.Band.name$': 'The Falling Box'},
+    let fallingInstruments = await Instrument.findAll({
       attributes: ['id', 'type'],
       include: [{
         model: Musician,
         attributes: [],
         include: [{
-          model: Band
+          model: Band,
+          where: { name: 'The Falling Box'}
         }],
+        required: true
       }],
       order: ['type']
     });

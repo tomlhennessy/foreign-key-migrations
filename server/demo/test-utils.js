@@ -21,11 +21,11 @@ module.exports.runSeeders = async function () {
 )};
 
 module.exports.removeTestDB = async function () {
-  return new Promise((resolve, reject) => {
-    const deleteDB = exec(
-      `rm ${process.env.DB_TEST_FILE} || true`,
-      {env: process.env},
-      err => (err ? reject(err): resolve())
-    );
-  }
+    return new Promise((resolve, reject) => {
+      const deleteDB = exec(
+        `rm ${process.env.DEMO_TEST_FILE} || true`,
+        {env: process.env},
+        err => (err ? reject(err): resolve())
+      );
+    }
 )};
