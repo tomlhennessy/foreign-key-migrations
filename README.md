@@ -106,4 +106,14 @@ Next, run `npm run demo-2`. This will run the script found in the __server/demo/
 You are now able to create migrations and models in **Sequelize** that utilize
 foreign keys, creating both one-to-many and many-to-many associations.
 
+## Submission
+
+Submit your work. Make sure to delete the `node_modules` folders in
+__BOTH root and server directories__!!
+
+1. Delete the `node_modules` folder in the root directory
+2. Delete the `node_modules` folder in the __server__ directory
+3. Zip up the project folder
+4. Submit the zip file
+
 [onDelete-hooks]: https://sequelize.org/master/manual/hooks.html#one-to-one-and-one-to-many-associations
