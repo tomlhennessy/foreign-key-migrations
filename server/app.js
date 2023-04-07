@@ -41,5 +41,9 @@ app.get('/', (req, res) => {
 });
 
 // Set port and listen for incoming requests - DO NOT MODIFY
-const port = 5000;
-app.listen(port, () => console.log('Server is listening on port', port));
+if (require.main === module) {
+    const port = 8000;
+    app.listen(port, () => console.log('Server is listening on port', port));
+} else {
+    module.exports = app;
+}

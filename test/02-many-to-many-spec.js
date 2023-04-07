@@ -1,30 +1,11 @@
-/* ---------------- This section must be at the top: ---------------- */
-delete require.cache[require.resolve('../server/config/database.js')];
-delete require.cache[require.resolve('../server/db/models')];
-delete require.cache[require.resolve('../server/app')];
-const path = require('path');
-const DB_TEST_FILE = 'db/' + path.basename(__filename, '.js') + '.db';
-process.env.DB_TEST_FILE = 'server/' + DB_TEST_FILE;
-/* ------------------------------------------------------------------ */
-
-const chai = require('chai');
-const chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
+const { setupBefore, setupChai, removeTestDB, runSQLQuery } = require('./utils/test-utils');
+const chai = setupChai();
 const expect = chai.expect;
 
-const { resetDB, seedAllDB, removeTestDB } = require('./utils/test-utils');
-const { Musician, Band, Instrument, MusicianInstrument} = require('../server/db/models');
-
 describe('Many-to-Many Specs', () => {
-
-    before(async () => {
-        await resetDB(DB_TEST_FILE);
-        return await seedAllDB(DB_TEST_FILE);
-    });
-
-      after(async () => {
-        return await removeTestDB(DB_TEST_FILE);
-    });
+    let DB_TEST_FILE, SERVER_DB_TEST_FILE, models, server;
+    before(async () => ({ server, models, DB_TEST_FILE, SERVER_DB_TEST_FILE } = await setupBefore(__filename)));
+    after(async () => await removeTestDB(DB_TEST_FILE));
 
     describe('Musician to Instrument relationship', () => {
         let marine;
@@ -35,22 +16,22 @@ describe('Many-to-Many Specs', () => {
 
         before(async () => {
             // Create Marine Sweet, member of America The Piano
-            marine = Musician.build({firstName: 'Marine', lastName: 'Sweet'});
-            america = await Band.findOne({where: {name: 'America The Piano'}});
+            marine = models.Musician.build({firstName: 'Marine', lastName: 'Sweet'});
+            america = await models.Band.findOne({where: {name: 'America The Piano'}});
             marine.bandId = america.id;
             await marine.save();
 
             // Create Georgette Kubo, member of America The Piano
-            georgette = Musician.build({firstName: 'Georgette', lastName: 'Kubo'});
+            georgette = models.Musician.build({firstName: 'Georgette', lastName: 'Kubo'});
             georgette.bandId = america.id;
             await georgette.save();
 
-            adam = Musician.build({firstName: 'Adam', lastName: 'Appleby'});
+            adam = models.Musician.build({firstName: 'Adam', lastName: 'Appleby'});
             adam.bandId = america.id;
             await adam.save();
 
             // Create Anton Martinovic, member of The Falling Box
-            anton = Musician.build({firstName: 'Anton', lastName: 'Martinovic'});
+            anton = models.Musician.build({firstName: 'Anton', lastName: 'Martinovic'});
             anton.bandId = america.id;
             await anton.save();
         });
@@ -62,7 +43,7 @@ describe('Many-to-Many Specs', () => {
             expect(beforeMarine).to.have.length(0);
 
             // Associate Marine with saxophone
-            await marine.addInstruments(await Instrument.findAll({
+            await marine.addInstruments(await models.Instrument.findAll({
                 where: {type: ['saxophone']}
             }));
 
@@ -79,7 +60,7 @@ describe('Many-to-Many Specs', () => {
             expect(beforeGeorgette).to.have.length(0);
 
             // Associate Georgette with drums, trumpet, and saxophone
-            await georgette.addInstruments(await Instrument.findAll({
+            await georgette.addInstruments(await models.Instrument.findAll({
                 where: {type: ['drums', 'trumpet', 'saxophone']}
             }));
 
@@ -98,7 +79,7 @@ describe('Many-to-Many Specs', () => {
 
 
         it('can properly associate instruments with musicians', async () => {
-            let cello = await Instrument.findOne({where: {type: 'cello'}})
+            let cello = await models.Instrument.findOne({where: {type: 'cello'}})
             let beforeCelloists = await cello.getMusicians();
 
             expect(beforeCelloists).to.be.an('array');
@@ -117,7 +98,7 @@ describe('Many-to-Many Specs', () => {
 
 
         it('can select all musicians associated with an instrument', async () => {
-            let saxophone = await Instrument.findOne({where: {type: 'saxophone'}})
+            let saxophone = await models.Instrument.findOne({where: {type: 'saxophone'}})
             let saxophonists = await saxophone.getMusicians({
               attributes: ['id', 'firstName', 'lastName'],
               order: [['firstName']],
@@ -150,15 +131,15 @@ describe('Many-to-Many Specs', () => {
         });
 
         it('association creates new record in MusicianInstruments join table', async () => {
-            let allMusicianInstruments = await MusicianInstrument.findAll();
+            let allMusicianInstruments = await models.MusicianInstrument.findAll();
             expect(allMusicianInstruments).to.have.length(6);
 
             // Associate Marine with trumpet
-            await marine.addInstruments(await Instrument.findAll({
+            await marine.addInstruments(await models.Instrument.findAll({
                 where: {type: ['trumpet']}
             }));
 
-            allMusicianInstruments = await MusicianInstrument.findAll();
+            allMusicianInstruments = await models.MusicianInstrument.findAll();
             expect(allMusicianInstruments).to.have.length(7);
         });
     });

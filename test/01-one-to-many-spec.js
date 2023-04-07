@@ -1,44 +1,25 @@
-/* ---------------- This section must be at the top: ---------------- */
-delete require.cache[require.resolve('../server/config/database.js')];
-delete require.cache[require.resolve('../server/db/models')];
-delete require.cache[require.resolve('../server/app')];
-const path = require('path');
-const DB_TEST_FILE = 'db/' + path.basename(__filename, '.js') + '.db';
-process.env.DB_TEST_FILE = 'server/' + DB_TEST_FILE;
-/* ------------------------------------------------------------------ */
-
-const chai = require('chai');
-const chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
+const { setupBefore, setupChai, removeTestDB, runSQLQuery } = require('./utils/test-utils');
+const chai = setupChai();
 const expect = chai.expect;
 
-const { resetDB, seedAllDB, removeTestDB } = require('./utils/test-utils');
-const { Musician, Band } = require('../server/db/models');
-
 describe('One-to-Many Specs', () => {
-
-    before(async () => {
-        await resetDB(DB_TEST_FILE);
-        return await seedAllDB(DB_TEST_FILE);
-    });
-
-    after(async () => {
-        return await removeTestDB(DB_TEST_FILE);
-    });
+    let DB_TEST_FILE, SERVER_DB_TEST_FILE, models, server;
+    before(async () => ({ server, models, DB_TEST_FILE, SERVER_DB_TEST_FILE } = await setupBefore(__filename)));
+    after(async () => await removeTestDB(DB_TEST_FILE));
 
     describe('Musician -> Band relationship', () => {
         let adam;
         let fallingBox;
 
         before(async () => {
-            adam = await Musician.build({firstName: 'Adam', lastName: 'Appleby'});
-            fallingBox = await Band.findOne({where: {name: 'The Falling Box'}});
+            adam = await models.Musician.build({firstName: 'Adam', lastName: 'Appleby'});
+            fallingBox = await models.Band.findOne({where: {name: 'The Falling Box'}});
             adam.bandId = fallingBox.id;
             await adam.save();
         })
 
         it('implements the correct association from Musician to Band', async () => {
-            const res = await Musician.findByPk(adam.id, {include: Band});
+            const res = await models.Musician.findByPk(adam.id, { include: models.Band });
             const queryResult = res.toJSON();
 
             expect(queryResult).to.not.be.null;
@@ -51,7 +32,7 @@ describe('One-to-Many Specs', () => {
         });
 
         it('the foreign key reference is the only band info in the musician record', async () => {
-            const res = await Musician.findByPk(adam.id);
+            const res = await models.Musician.findByPk(adam.id);
             const queryResult = res.toJSON();
 
             expect(queryResult).to.not.be.null;
@@ -66,13 +47,13 @@ describe('One-to-Many Specs', () => {
         it('deleting the band deletes the musicians associated with it', async () => {
             await fallingBox.destroy();
 
-            const band = await Band.findByPk(fallingBox.id);
+            const band = await models.Band.findByPk(fallingBox.id);
             expect(band).to.be.null;
 
-            const musician = await Musician.findByPk(adam.id);
+            const musician = await models.Musician.findByPk(adam.id);
             expect(musician).to.be.null;
 
-            const musicians = await Musician.findAll();
+            const musicians = await models.Musician.findAll();
             expect(musicians).to.be.an('array');
             expect(musicians).to.be.empty;
         });
