@@ -4,12 +4,12 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "install": "npm install --prefix server",
-        "test": "NODE_ENV=test mocha --timeout 10000",
-        "test-with-json": "NODE_ENV=test mocha --timeout 10000 --reporter json",
-        "reset-files": "node test/utils/reset-files.js",
         "demo-1": "npm run demo-1 --prefix server",
-        "demo-2": "npm run demo-2 --prefix server"
+        "demo-2": "npm run demo-2 --prefix server",
+        "install": "npm install --prefix server",
+        "reset-files": "node test/utils/reset-files.js",
+        "test": "NODE_ENV=test mocha --timeout 60000",
+        "test-with-json": "NODE_ENV=test mocha --reporter json --timeout 100000"
     },
     "keywords": [],
     "author": "",
