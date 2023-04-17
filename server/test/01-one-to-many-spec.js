@@ -1,10 +1,10 @@
-const { setupBefore, setupChai, removeTestDB, runSQLQuery } = require('./utils/test-utils');
+const { setupBefore, setupChai, removeTestDB } = require('./utils/test-utils');
 const chai = setupChai();
 const expect = chai.expect;
 
 describe('One-to-Many Specs', () => {
-    let DB_TEST_FILE, SERVER_DB_TEST_FILE, models, server;
-    before(async () => ({ server, models, DB_TEST_FILE, SERVER_DB_TEST_FILE } = await setupBefore(__filename)));
+    let DB_TEST_FILE, models, server;
+    before(async () => ({ server, models, DB_TEST_FILE } = await setupBefore(__filename)));
     after(async () => await removeTestDB(DB_TEST_FILE));
 
     describe('Musician -> Band relationship', () => {

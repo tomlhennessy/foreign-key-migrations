@@ -61,15 +61,22 @@ this record to cascade the deletion to associated records.
 > found in the [Sequelize documentation about hooks][onDelete-hooks]
 
 To test that the associations have been implemented correctly, a test file has
-been created for you. Run `npm test` in your terminal to test the association.
-The first three tests should pass if you have set up the associations correctly.
+been created for you. Run `npm test test/01-one-to-many-spec.js` in the
+__server__ directory to test the association. The first three tests should pass
+if you have set up the associations correctly.
 
-Next, run `npm run demo-1`. This will run the script found in the __server/demo/demo-one-to-many.js__ file. Read the code in the script to understand what is happening when the script executes. Look in the console to confirm:
+Next, run `node demo/01-one-to-many.js` from within the __server__ directory
+This will run the script found in the __server/demo/01-one-to-many.js__ file.
+Read the code in the script to understand what is happening when the script
+executes. Look in the console to confirm:
 
 - the structure of Adam's musician record, with associated band data
 - all musician data includes Adam (before deleting the band)
 - deleting Adam's band deletes Adam
 
+> Note: If you are getting an error running the script, make sure you ran
+> `sh setup-commands.sh` in the __root__ directory. Then make sure you are in
+> __server__ directory to run the script, `node demo/01-one-to-many.js`.
 
 ## Step 2: Many-to-Many
 
@@ -91,11 +98,14 @@ In both models of this relationship, `Instruments` and `Musicians`, create a
 to, and that you are connecting through the `MusicianInstrument` model. In addition, explicitly define the `foreignKey`, and `otherKey` properties within the `belongsToMany` associations for each model.
 
 To test that the associations have been implemented correctly, a test file has
-been created for you. Run `npm test` in your terminal to test
-the association. All tests should pass if you have set up the associations
-correctly.
+been created for you. Run `npm test test/02-many-to-many-spec.js` in the
+__server__ directory to test the association. All tests should pass if you have
+set up the associations correctly.
 
-Next, run `npm run demo-2`. This will run the script found in the __server/demo/demo-many-to-many.js__ file. Read the code in the script to understand what is happening when the script executes. Look in the console to confirm:
+Next, run `node demo/02-many-to-many.js` from within the __server__ directory
+This will run the script found in the __server/demo/02-many-to-many.js__ file.
+Read the code in the script to understand what is happening when the script
+executes. Look in the console to confirm:
 
 - that Georgette and Marine are associated with the saxophone
 - that the drums, saxophone, and trumpet are associated with Georgette
@@ -108,12 +118,10 @@ foreign keys, creating both one-to-many and many-to-many associations.
 
 ## Submission
 
-Submit your work. Make sure to delete the `node_modules` folders in
-__BOTH root and server directories__!!
+Submit your work.
 
-1. Delete the `node_modules` folder in the root directory
-2. Delete the `node_modules` folder in the __server__ directory
-3. Zip up the project folder
-4. Submit the zip file
+1. Delete the `node_modules` folder in the __server__ directory
+2. Zip up the project folder
+3. Submit the zip file
 
 [onDelete-hooks]: https://sequelize.org/master/manual/hooks.html#one-to-one-and-one-to-many-associations

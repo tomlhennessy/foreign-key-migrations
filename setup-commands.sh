@@ -1,7 +1,3 @@
-# Install dependencies at the root
-
-npm install
-
 # Navigate into server directory
 
 cd server
