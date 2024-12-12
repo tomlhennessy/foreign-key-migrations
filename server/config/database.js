@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   development: {
     storage: process.env.DB_FILE,
